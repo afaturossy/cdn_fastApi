@@ -13,7 +13,7 @@ class Client:
         b_url = url.encode('utf-8')
         filename = hashlib.sha3_256(b_url).hexdigest()
 
-        file = Path(Path.joinpath(Path.cwd(), "public", f"{filename}.webp"))
+        file = Path(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"))
         if file.exists():
             return FileResponse(str(file.absolute()))
         else:
@@ -24,13 +24,13 @@ class Client:
         res = session.get(url)
         filename = hashlib.sha3_256(url.encode('utf-8')).hexdigest()
         if res.status_code < 300:
-            p_file = Path.joinpath(Path.cwd(), "public", f"{filename}.jpg")
+            p_file = Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg")
             file = Path(p_file)
             try:
                 file.write_bytes(res.content)
 
                 im = Image.open(p_file).convert("RGB")
-                im.save(Path.joinpath(Path.cwd(), "public", f"{filename}.webp"), "webp")
+                im.save(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"), "webp")
                 file.unlink()
                 return True
             except Exception as e:

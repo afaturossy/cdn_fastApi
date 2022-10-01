@@ -49,9 +49,9 @@ async def upload_image(url: str | None = None):
             if download:
                 return "download"
             else:
-                return Response(content="0", status_code=500)
+                return Response(content="", status_code=500)
     else:
-        return Response(content="0", status_code=500)
+        return Response(content="", status_code=500)
 
 
 if __name__ == "__main__":
