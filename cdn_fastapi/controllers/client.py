@@ -15,7 +15,7 @@ class Client:
 
         file = Path(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"))
         if file.exists():
-            return FileResponse(str(file.absolute()))
+            return FileResponse(str(file.absolute()), media_type="image/webp")
         else:
             return Response(content=None, status_code=404)
 
