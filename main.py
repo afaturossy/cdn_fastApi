@@ -56,4 +56,4 @@ async def upload_image(url: str | None = None):
 
 if __name__ == "__main__":
     print(f"server run in port {PORT}")
-    uvicorn.run("main:app", port=PORT, log_level="info")
+    uvicorn.run("main:app", port=PORT, host="0.0.0.0", log_level="info")
