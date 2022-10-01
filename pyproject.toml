@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "cdn-fastapi"
+version = "0.1.0"
+description = ""
+authors = ["ari-fatur <ari.arifatur.fatur@gmail.com>"]
+readme = "README.md"
+packages = [{include = "cdn_fastapi"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+uvicorn = "^0.18.3"
+fastapi = "^0.85.0"
+requests = "^2.28.1"
+Pillow = "^9.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
