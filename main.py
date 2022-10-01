@@ -1,15 +1,22 @@
 import hashlib
+import os
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
 import uvicorn
+from dotenv import load_dotenv
 
 from fastapi import FastAPI, Response
 
 from cdn_fastapi.controllers.client import Client
 
+load_dotenv()
+
 PORT = 5000
+if os.getenv("PORT") is not None:
+    PORT = int(os.getenv("PORT"))
+
 app = FastAPI()
 kode_ijin = "kopiko"
 
@@ -48,4 +55,5 @@ async def upload_image(url: str | None = None):
 
 
 if __name__ == "__main__":
+    print(f"server run in port {PORT}")
     uvicorn.run("main:app", port=PORT, log_level="info")

@@ -1,2 +1,4 @@
 # FASTAPI CDN
 ## TANPA LOGIKA
+## KONFIGURASI FILE .env
+PORT={port untuk server}
