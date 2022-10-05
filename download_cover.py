@@ -149,7 +149,7 @@ engine = SimpleConnectionPool(minconn=1, maxconn=3, user="arekturu", password="k
                               host="javtube.fun",
                               port=5432)
 
-th_pool = ThreadPoolExecutor(max_workers=5)
+th_pool = ThreadPoolExecutor(max_workers=2)
 
 
 def download_image(url, session: Session):
@@ -204,15 +204,15 @@ if __name__ == "__main__":
         limit = 10
         for i in range(math.ceil(count[0] / limit)):
             print(i, i * limit)
-            print(f"select images from chapter order by id offset {i*limit} limit 1 ;")
+            print(f"select images from chapter order by id offset {i * limit} limit 1 ;")
             cur = conn.cursor()
-            cur.execute(f"select images from chapter order by id offset {i*limit} limit 1 ;")
+            cur.execute(f"select images from chapter order by id offset {i * limit} limit 1 ;")
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
                 print(i)
                 for img in list_img[0]:
-                    th_pool.submit(download_image,img,session)
+                    th_pool.submit(download_image, img, session)
                     pass
             cur.close()
 
