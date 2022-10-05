@@ -1,11 +1,13 @@
 import hashlib
 import math
+import os
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from itertools import repeat
 from pathlib import Path
 
+import psutil as psutil
 from psycopg2.pool import SimpleConnectionPool
 from requests import Session
 from PIL import Image
@@ -176,6 +178,16 @@ def download_image(url, session: Session):
             return None
 
 
+def check_file(url):
+    filename = hashlib.sha3_256(url.encode('utf-8')).hexdigest()
+    p_file = Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg")
+    file = Path(p_file)
+    if file.exists():
+        return None
+    else:
+        return url
+
+
 def get_cover(cursor) -> list:
     cursor.execute("""
             select k.cover from komik k order by k.id;
@@ -202,18 +214,24 @@ if __name__ == "__main__":
         count = cur.fetchone()
         cur.close()
         limit = 10
+        proses = psutil.Process(os.getpid())
+
         for i in range(math.ceil(count[0] / limit)):
             print(i, i * limit)
-            print(f"select images from chapter order by id offset {i * limit} limit 1 ;")
+            print(f"memory usage {proses.memory_info}")
+            # print(f"select images from chapter order by id offset {i * limit} limit {limit} ;")
             cur = conn.cursor()
-            cur.execute(f"select images from chapter order by id offset {i * limit} limit 1 ;")
+            cur.execute(f"select images from chapter order by id offset {i * limit} limit {limit} ;")
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
                 print(i)
                 for img in list_img[0]:
-                    th_pool.submit(download_image, img, session)
-                    pass
+                    cek = check_file(img)
+                    if cek is not None:
+                        r = th_pool.submit(download_image, img, session)
+                        r.result()
+
             cur.close()
 
     engine.putconn(conn)
