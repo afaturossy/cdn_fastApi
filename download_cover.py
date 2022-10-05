@@ -200,17 +200,20 @@ if __name__ == "__main__":
     elif "chapter" in sys.argv:
         cur.execute("""select count(*) from chapter c ; """)
         count = cur.fetchone()
-
-        for i in range(math.ceil(count[0] / 10)):
-            print(i, i * 1)
-            print(f"select images from chapter order by id offset {i*1} limit 1 ;")
-            cur.execute(f"select images from chapter order by id offset {i*1} limit 1 ;")
+        cur.close()
+        limit = 10
+        for i in range(math.ceil(count[0] / limit)):
+            print(i, i * limit)
+            print(f"select images from chapter order by id offset {i*limit} limit 1 ;")
+            cur = conn.cursor()
+            cur.execute(f"select images from chapter order by id offset {i*limit} limit 1 ;")
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
                 print(i)
                 for k in th_pool.map(download_image, list_img[0], repeat(session)):
                     pass
+            cur.close()
 
     engine.putconn(conn)
     engine.closed()
