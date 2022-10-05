@@ -149,7 +149,7 @@ engine = SimpleConnectionPool(minconn=1, maxconn=3, user="arekturu", password="k
                               host="javtube.fun",
                               port=5432)
 
-th_pool = ThreadPoolExecutor(max_workers=100)
+th_pool = ThreadPoolExecutor(max_workers=10)
 
 
 def download_image(url, session: Session):
@@ -208,7 +208,10 @@ if __name__ == "__main__":
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
+                print(i)
                 for k in th_pool.map(download_image, list_img[0], repeat(session)):
-                    print(k)
+                    pass
 
+    engine.putconn(conn)
+    engine.closed()
     print(time.time() - start)
