@@ -208,7 +208,7 @@ if __name__ == "__main__":
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
-                r = th_pool.map(download_image, list_img[0], repeat(session))
+                list(th_pool.map(download_image, list_img[0], repeat(session)))
 
     th_pool.shutdown(wait=True)
 
