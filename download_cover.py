@@ -211,7 +211,8 @@ if __name__ == "__main__":
 
             for list_img in list_img_double:
                 print(i)
-                for k in th_pool.map(download_image, list_img[0], repeat(session)):
+                for img in list_img[0]:
+                    th_pool.submit(download_image,img,session)
                     pass
             cur.close()
 
