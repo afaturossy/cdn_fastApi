@@ -1,4 +1,5 @@
 import hashlib
+import time
 from pathlib import Path
 from requests import Session
 from PIL import Image
@@ -14,7 +15,9 @@ class Client:
         filename = hashlib.sha3_256(b_url).hexdigest()
 
         file = Path(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"))
+        start = time.time()
         if file.exists():
+            print(time.time() - start)
             return FileResponse(str(file.absolute()), media_type="image/webp")
         else:
             return Response(content=None, status_code=404)

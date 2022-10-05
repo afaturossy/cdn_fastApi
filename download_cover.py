@@ -144,7 +144,7 @@ list_img = ['https://i2.wp.com/cdn.andakepo.buzz/uploads/2019/11/Komik-Rich-Play
             ]
 
 engine = SimpleConnectionPool(minconn=1, maxconn=3, user="arekturu", password="komik_db_yaya", database="komik_backend",
-                              host="localhost",
+                              host="javtube.fun",
                               port=5432)
 
 th_pool = ThreadPoolExecutor(max_workers=100)
@@ -156,6 +156,7 @@ def download_image(data, session: Session):
     p_file = Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg")
     file = Path(p_file)
     if file.exists():
+        print(f"{data[0]} gagal")
         return None
     res = session.get(url)
     if res.status_code < 300:
@@ -165,6 +166,7 @@ def download_image(data, session: Session):
             im = Image.open(p_file).convert("RGB")
             im.save(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"), "webp")
             file.unlink()
+            print(f"{data[0]} done")
             return [data[0], filename]
         except Exception as e:
             if file.exists():
