@@ -157,7 +157,7 @@ def download_image(url, session: Session):
     p_file = Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg")
     file = Path(p_file)
     if file.exists():
-        print(f"data exist")
+        # print(f"data exist")
         return None
     res = session.get(url)
     if res.status_code < 300:
@@ -167,7 +167,7 @@ def download_image(url, session: Session):
             im = Image.open(p_file).convert("RGB")
             im.save(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"), "webp")
             file.unlink()
-            print(f"data done")
+            # print(f"data done")
             return True
         except Exception as e:
             if file.exists():
@@ -200,16 +200,14 @@ if __name__ == "__main__":
     elif "chapter" in sys.argv:
         cur.execute("""select count(*) from chapter c ; """)
         count = cur.fetchone()
-        print(count)
+
         for i in range(math.ceil(count[0] / 100)):
-            print(1, i * 100)
-            cur.execute("select images from chapter order by id offset %s limit 100 ;",
-                        (i * 100,))
+            print(i, i * 100)
+            print(f"select images from chapter order by id offset {i*100} limit 100 ;")
+            cur.execute(f"select images from chapter order by id offset {i*100} limit 100 ;")
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
-                list(th_pool.map(download_image, list_img[0], repeat(session)))
-
-    th_pool.shutdown(wait=True)
+                print(len(list(th_pool.map(download_image, list_img[0], repeat(session)))))
 
     print(time.time() - start)
