@@ -226,11 +226,18 @@ if __name__ == "__main__":
 
             for list_img in list_img_double:
                 print(i)
-                for img in list_img[0]:
-                    cek = check_file(img)
-                    if cek is not None:
-                        r = th_pool.submit(download_image, img, session)
-                        r.result()
+                jml = len(list_img)
+                l_proses = []
+                for index,img in enumerate(list_img[0]):
+                    l_proses.append(img)
+                    if len(l_proses) > 2 or index == (jml-1):
+                        list(th_pool.map(download_image, l_proses, repeat(session)))
+                        l_proses.clear()
+
+                    # cek = check_file(img)
+                    # if cek is not None:
+                    #     r = th_pool.submit(download_image, img, session)
+                    #     r.result()
 
             cur.close()
 
