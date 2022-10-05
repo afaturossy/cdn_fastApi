@@ -41,7 +41,7 @@ async def upload_image(url: str | None = None):
     if url is not None:
         b_url = url.encode('utf-8')
         filename = hashlib.sha3_256(b_url).hexdigest()
-        file = Path(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg"))
+        file = Path(Path.joinpath(Path.cwd(), "cdn_fastapi/public_old", f"{filename}.jpg"))
         if file.exists():
             return "exist"
         else:

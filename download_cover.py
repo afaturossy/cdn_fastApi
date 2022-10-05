@@ -152,13 +152,12 @@ engine = SimpleConnectionPool(minconn=1, maxconn=3, user="arekturu", password="k
 th_pool = ThreadPoolExecutor(max_workers=100)
 
 
-def download_image(data, session: Session):
-    url = data[1]
+def download_image(url, session: Session):
     filename = hashlib.sha3_256(url.encode('utf-8')).hexdigest()
     p_file = Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.jpg")
     file = Path(p_file)
     if file.exists():
-        print(f"{data[0]} exist")
+        print(f"data exist")
         return None
     res = session.get(url)
     if res.status_code < 300:
@@ -168,8 +167,8 @@ def download_image(data, session: Session):
             im = Image.open(p_file).convert("RGB")
             im.save(Path.joinpath(Path.cwd(), "cdn_fastapi/public", f"{filename}.webp"), "webp")
             file.unlink()
-            print(f"{data[0]} done")
-            return [data[0], filename]
+            print(f"data done")
+            return True
         except Exception as e:
             if file.exists():
                 file.unlink()
@@ -179,7 +178,7 @@ def download_image(data, session: Session):
 
 def get_cover(cursor) -> list:
     cursor.execute("""
-            select k.id , k.cover from komik k order by k.id;
+            select k.cover from komik k order by k.id;
         """)
     return cursor.fetchall()
 
@@ -196,17 +195,20 @@ if __name__ == "__main__":
 
     if "cover" in sys.argv:
         list_cover = get_cover(cur)
+        list_cover = [x[0] for x in list_cover]
         th_pool.map(download_image, list_cover, repeat(session))
     elif "chapter" in sys.argv:
         cur.execute("""select count(*) from chapter c ; """)
         count = cur.fetchone()
         print(count)
-        for i in range(math.ceil(count[0]/100)):
-            cur.execute("select images from chapter order by id limit 100 offset %s;",
-                        (i*100,))
+        for i in range(math.ceil(count[0] / 100)):
+            print(1, i * 100)
+            cur.execute("select images from chapter order by id offset %s limit 100 ;",
+                        (i * 100,))
             list_img_double = cur.fetchall()
+
             for list_img in list_img_double:
-                th_pool.map(download_image, list_img[0], repeat(session))
+                r = th_pool.map(download_image, list_img[0], repeat(session))
 
     th_pool.shutdown(wait=True)
 
