@@ -158,7 +158,7 @@ def download_image(url, session: Session):
     file = Path(p_file)
     if file.exists():
         # print(f"data exist")
-        return None
+        return True
     res = session.get(url)
     if res.status_code < 300:
         try:
