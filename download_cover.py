@@ -201,10 +201,10 @@ if __name__ == "__main__":
         cur.execute("""select count(*) from chapter c ; """)
         count = cur.fetchone()
 
-        for i in range(math.ceil(count[0] / 100)):
-            print(i, i * 100)
-            print(f"select images from chapter order by id offset {i*100} limit 100 ;")
-            cur.execute(f"select images from chapter order by id offset {i*100} limit 100 ;")
+        for i in range(math.ceil(count[0] / 10)):
+            print(i, i * 10)
+            print(f"select images from chapter order by id offset {i*10} limit 10 ;")
+            cur.execute(f"select images from chapter order by id offset {i*10} limit 100 ;")
             list_img_double = cur.fetchall()
 
             for list_img in list_img_double:
